@@ -23,7 +23,7 @@ function rowToMatrix(row_index, row)
 			if ($(this).find("input:checkbox").is(":checked") && $(this).find("input:text").val().length > 0)
 			{
 				entries.push(String.format(
-					"\t\t\\node[{0},dsp/label={1}] (m{2}_{3}) \{{4}\};",
+					"\t\t\\node[{0},dsp/label={1}] (m{2}_{3}) \{${4}$\};",
 					$(this).find("select.node_type").val(),
 					$(this).find("select.text_align").val(),
 					row_index,
@@ -47,18 +47,100 @@ function rowToMatrix(row_index, row)
 }
 
 
+HOR_EDGE_ELEMENTS = {
+	"none": " ",
+	"line": "dspline",
+	"conn_right": "dspconn",
+	"conn_left": "dspconn",
+	"flow_right": "dspflow",
+	"flow_left": "dspflow"
+};
+
+function makeHorPath(row_index, col_index, cell)
+{
+	var type = $(cell).find("select").val();
+	var reversed = type == "conn_left" || type == "flow_left";
+
+	if (type == "none") return "";
+
+	return String.format(
+		"\t\\begin\{scope\}[start chain]\n\t\t\\chainin (m{0}_{1});\n\t\t\\chainin (m{0}_{2}) [join=by {3}];\n\t\\end\{scope\}",
+		row_index,
+		reversed ? col_index + 1 : col_index - 1,
+		reversed ? col_index - 1 : col_index + 1,
+		HOR_EDGE_ELEMENTS[type]
+	);
+}
+
+VERT_EDGE_ELEMENTS = {
+	"none": " ",
+	"line": "dspline",
+	"conn_up": "dspconn",
+	"conn_down": "dspconn",
+	"flow_up": "dspflow",
+	"flow_down": "dspflow"
+};
+
+function makeVertPath(row_index, col_index, cell)
+{
+	var type = $(cell).find("select").val();
+	var reversed = type == "conn_up" || type == "flow_up";
+
+	if (type == "none") return "";
+
+	return String.format(
+		"\t\\begin\{scope\}[start chain]\n\t\t\\chainin (m{1}_{0});\n\t\t\\chainin (m{2}_{0}) [join=by {3}];\n\t\\end\{scope\}",
+		col_index,
+		reversed ? row_index + 1 : row_index - 1,
+		reversed ? row_index - 1 : row_index + 1,
+		VERT_EDGE_ELEMENTS[type]
+	);
+}
+
+
 $(document).ready(function()
 {
 	$("#generate").on("click", function()
 	{
 		var rows = [];
-		$("#grid").children().each(function(index)
+		var paths = [];
+
+		$("#grid").children().each(function(row_index)
 		{
-			if (index % 2 == 0)
+			if (row_index % 2 == 0)
 			{
-				rows.push(rowToMatrix(index, this));
+				rows.push(rowToMatrix(row_index, this));
+				$(this).children().each(function(col_index)
+				{
+					if ($(this).hasClass("hor_edge"))
+					{
+						var path = makeHorPath(row_index, col_index, this);
+						if (path.length > 0) paths.push(path);
+					}
+				});
+			}
+			else
+			{
+				$(this).children().each(function(col_index)
+				{
+					if ($(this).hasClass("vert_edge"))
+					{
+						var path = makeVertPath(row_index, col_index, this);
+						if (path.length > 0) paths.push(path);
+					}
+				});
 			}
 		});
-		console.log(rows.join("\n"));
+		output = [
+			"\\begin\{center\}\n",
+			"\\begin\{tikzpicture\}\n",
+			"\t\\matrix (m1) [row sep=2.5mm, column sep=5mm]\n\t\{\n",
+			rows.join("\n"),
+			"\n\t\};\n",
+			paths.join("\n"),
+			"\n\\end\{tikzpicture\}\n",
+			"\\end\{center\}\n"
+		];
+		console.log(output.join(""));
 	});
 });
