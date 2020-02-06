@@ -25,6 +25,13 @@ VERT_EDGE_TYPES = {
 	"flow_down": "Flow Down"
 };
 
+TEXT_ALIGN_TYPES = {
+	"above": "Above",
+	"under": "Under",
+	"left": "Left",
+	"right": "Right"
+};
+
 function newSelect(options)
 {
 	var select = $("<select/>");
@@ -40,10 +47,46 @@ function newSelect(options)
 
 function newNode()
 {
-	var select = newSelect(NODE_TYPES);
 	var node = $("<td class='node'/>");
-	$(node).append(select);
 	$(node).css("background", "#90ee90");
+
+	// Select node type
+	var select = newSelect(NODE_TYPES);
+	$(node).append(select);
+	$(node).append("<br>");
+
+	// Whether the node has text
+	var hasText = $("<input type='checkbox' value='hasText'/>");
+	$(node).append(hasText);
+
+	// Text for the node
+	var text = $("<input type='text' size='3'/>");
+	$(text).hide();
+	$(node).append(text);
+
+	// Alignment of the node text
+	var align = newSelect(TEXT_ALIGN_TYPES);
+	$(align).hide();
+	$(node).append("<br>");
+	$(node).append(align);
+
+	// Interactivity
+	$(hasText).change(function()
+	{
+		var enabled = $(this).is(":checked");
+		if (enabled)
+		{
+			$(text).show();
+			$(align).show();
+		}
+		else
+		{
+			$(text).hide();
+			$(text).val("");
+			$(align).hide();
+		}
+	});
+
 	return node;
 }
 
@@ -51,6 +94,7 @@ function newHorEdge()
 {
 	var select = newSelect(HOR_EDGE_TYPES);
 	var edge = $("<td class='hor_edge'/>");
+	$(edge).css("background", "#f0f0f0");
 	$(edge).append(select);
 	return edge;
 }
@@ -59,6 +103,7 @@ function newVertEdge()
 {
 	var select = newSelect(VERT_EDGE_TYPES);
 	var edge = $("<td class='vert_edge'/>");
+	$(edge).css("background", "#f0f0f0");
 	$(edge).append(select);
 	return edge;
 }
