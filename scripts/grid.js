@@ -27,7 +27,7 @@ VERT_EDGE_TYPES = {
 
 TEXT_ALIGN_TYPES = {
 	"above": "Above",
-	"under": "Under",
+	"below": "Below",
 	"left": "Left",
 	"right": "Right"
 };
