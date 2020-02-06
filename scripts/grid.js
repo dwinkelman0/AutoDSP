@@ -52,6 +52,7 @@ function newNode()
 
 	// Select node type
 	var select = newSelect(NODE_TYPES);
+	$(select).addClass("node_type");
 	$(node).append(select);
 	$(node).append("<br>");
 
@@ -66,6 +67,7 @@ function newNode()
 
 	// Alignment of the node text
 	var align = newSelect(TEXT_ALIGN_TYPES);
+	$(align).addClass("text_align");
 	$(align).hide();
 	$(node).append("<br>");
 	$(node).append(align);
