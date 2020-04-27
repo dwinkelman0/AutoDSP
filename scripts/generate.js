@@ -98,49 +98,54 @@ function makeVertPath(row_index, col_index, cell)
 }
 
 
+function generateCode()
+{
+	var rows = [];
+	var paths = [];
+
+	$("#grid").children().each(function(row_index)
+	{
+		if (row_index % 2 == 0)
+		{
+			rows.push(rowToMatrix(row_index, this));
+			$(this).children().each(function(col_index)
+			{
+				if ($(this).hasClass("hor_edge"))
+				{
+					var path = makeHorPath(row_index, col_index, this);
+					if (path.length > 0) paths.push(path);
+				}
+			});
+		}
+		else
+		{
+			$(this).children().each(function(col_index)
+			{
+				if ($(this).hasClass("vert_edge"))
+				{
+					var path = makeVertPath(row_index, col_index, this);
+					if (path.length > 0) paths.push(path);
+				}
+			});
+		}
+	});
+	output = [
+		"\\begin\{center\}\n",
+		"\\begin\{tikzpicture\}\n",
+		"\t\\matrix (m1) [row sep=2.5mm, column sep=5mm]\n\t\{\n",
+		rows.join("\n"),
+		"\n\t\};\n",
+		paths.join("\n"),
+		"\n\\end\{tikzpicture\}\n",
+		"\\end\{center\}\n"
+	];
+	$("#output").text(output.join(""));
+}
+
+
 $(document).ready(function()
 {
-	$("#generate").on("click", function()
-	{
-		var rows = [];
-		var paths = [];
-
-		$("#grid").children().each(function(row_index)
-		{
-			if (row_index % 2 == 0)
-			{
-				rows.push(rowToMatrix(row_index, this));
-				$(this).children().each(function(col_index)
-				{
-					if ($(this).hasClass("hor_edge"))
-					{
-						var path = makeHorPath(row_index, col_index, this);
-						if (path.length > 0) paths.push(path);
-					}
-				});
-			}
-			else
-			{
-				$(this).children().each(function(col_index)
-				{
-					if ($(this).hasClass("vert_edge"))
-					{
-						var path = makeVertPath(row_index, col_index, this);
-						if (path.length > 0) paths.push(path);
-					}
-				});
-			}
-		});
-		output = [
-			"\\begin\{center\}\n",
-			"\\begin\{tikzpicture\}\n",
-			"\t\\matrix (m1) [row sep=2.5mm, column sep=5mm]\n\t\{\n",
-			rows.join("\n"),
-			"\n\t\};\n",
-			paths.join("\n"),
-			"\n\\end\{tikzpicture\}\n",
-			"\\end\{center\}\n"
-		];
-		console.log(output.join(""));
-	});
+	$("#add_row").on("click", generateCode);
+	$("#add_col").on("click", generateCode);
+	$("#generate").on("click", generateCode);
 });

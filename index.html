@@ -6,13 +6,19 @@
 		<script src="scripts/grid.js"></script>
 	</head>
 	<body>
-		<table id="grid" cellspacing="10"/>
-		<button id="add_row">Add Row</button>
-		<button id="delete_row">Delete Row</button>
-		<button id="add_col">Add Column</button>
-		<button id="delete_col">Delete Column</button>
-		<button id="generate">Generate</button>
-		<input type="text"/>
-		<button id="import">Import</button>
+		<ul style="display: flex; flex-direction: column; flex-wrap: wrap; list-style-type: none">
+			<li>
+				<button id="add_row">Add Row</button>
+				<button id="add_col">Add Column</button>
+				<button id="generate">Generate</button>
+			</li>
+			<li>
+				<table id="grid" cellspacing="10"></table>
+			</li>
+			<li style="background: #eee">
+				<div style="border-bottom: 1px solid black; font-weight: bold">Output</div>
+				<div id="output" style="white-space: pre-wrap;"/>
+			</li>
+		</ul>
 	</body>
 </html>

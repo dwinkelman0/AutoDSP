@@ -42,6 +42,7 @@ function newSelect(options)
 		$(newOption).text(options[option]);
 		$(select).append(newOption);
 	}
+	$(select).change(generateCode);
 	return select;
 }
 
@@ -58,15 +59,18 @@ function newNode()
 
 	// Whether the node has text
 	var hasText = $("<input type='checkbox' value='hasText'/>");
+	$(hasText).change(generateCode);
 	$(node).append(hasText);
 
 	// Text for the node
 	var text = $("<input type='text' size='3'/>");
+	$(text).change(generateCode);
 	$(text).hide();
 	$(node).append(text);
 
 	// Alignment of the node text
 	var align = newSelect(TEXT_ALIGN_TYPES);
+	$(align).change(generateCode);
 	$(align).addClass("text_align");
 	$(align).hide();
 	$(node).append("<br>");
@@ -163,4 +167,6 @@ $(document).ready(function()
 		n_cols = $($("#grid").children()[0]).children().length;
 		$("#grid").append([newEdgeRow(n_cols), newNodeRow(n_cols)]);
 	});
+
+	generateCode();
 });
