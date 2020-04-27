@@ -141,11 +141,3 @@ function generateCode()
 	];
 	$("#output").text(output.join(""));
 }
-
-
-$(document).ready(function()
-{
-	$("#add_row").on("click", generateCode);
-	$("#add_col").on("click", generateCode);
-	$("#generate").on("click", generateCode);
-});

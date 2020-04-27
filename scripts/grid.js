@@ -160,13 +160,17 @@ $(document).ready(function()
 			}
 			i++;
 		});
+		generateCode();
 	});
 
 	$("#add_row").on("click", function()
 	{
 		n_cols = $($("#grid").children()[0]).children().length;
 		$("#grid").append([newEdgeRow(n_cols), newNodeRow(n_cols)]);
+		generateCode();
 	});
+
+	$("#generate").on("click", generateCode);
 
 	generateCode();
 });
